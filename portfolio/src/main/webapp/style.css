@@ -8,12 +8,17 @@
   margin-top: 20px;
 }
 
+#head_pic{
+    width: 500px;
+    height: auto;
+}
+
 .sideNav{
     height: 100%;
     position: fixed;
     z-index: 0;
     top: 50px;
-    left:550px;
+    left: 25%;
 }
 
 .sideNav a{
@@ -25,7 +30,30 @@
 }
 
 .sideNav a:hover{
-    color:darkgray;
+    color: darkgray;
+}
+
+.img_container{
+  width:100%;	
+}
+
+.img_row{
+  display:block;	
+}
+
+.img_row img{
+  width: 32%;
+  height: auto;
+  display: inline;
+  top:0;  
+}
+
+ul{
+  list-style-type:none;
+}
+
+ul a{
+  text-decoration: none;
 }
 
 html{
