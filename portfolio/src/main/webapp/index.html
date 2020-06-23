@@ -7,30 +7,62 @@
     <script src="script.js"></script>
   </head>
   <body>
-    <div id="content">
+    <div id="main">
       <div id="side_nav" class="sideNav">
         <nav>
-          <a href="#education_anch">Education</a>
-          <a href="#acad_inter_anch">Academic Interests</a>
-          <a href="#hobbies_anch">Hobbies</a>
+          <a href="#background_anch">Background</a>  
+          <a href="#hobbies_anch">Hobbies &amp; Interests</a>
+          <a href="#academics_anch">Academics</a>
           <a href="#prof_links_anch">Professional Links</a>
         </nav>
       </div>
-      <h1>Gianluca Delgado's Portfolio</h1>
-      <img src="/images/portfolio_pic.jpeg" width="550" height="500">
-      <p>Hi! My name is Gianluca Delgado and I am currently a sophomore studying Physics at the California Institute of Technology. 
-          My academic interest currently include Quantum Information and Condensed Matter Theory and I plan to attend grad school
-          once I finish my B.S. I also really enjoy playing soccer and billiards whenever I have time and I actually plan on starting
-          a billiards club once I get back to campus. I also love coffee and I plan to build a complete
-          repitoire of brewing methods soon. 
-      </p>
-      <a id="education_anch"><h2>Education</h2></a>
-      <a id="acad_inter_anch"><h2>Academic Interests</h2></a>
-      <a id="hobbies_anch"><h2>Hobbies</h2></a>
-      <a id="prof_links_anch"><h2>Professional Links</h2></a>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+      <div id="content">
+        <h1>Gianluca Delgado's Portfolio</h1>
+        <img src="/images/portfolio_pic.jpeg" width="550" height="500">
+        <a id="background_anch"><h2>Background</h2></a>
+          <p>
+            Hi! my name is Gianluca Delgado I am a student and aspiring physicist currently entering my junior year at Caltech. Before moving to California for college, I spent most of my 
+            life in Orlando, FL; however, I was born in Italy and both of my parents are immigrants from Ecuador. Although most of life has been spent in the US, my family makes an effort to
+            keep us connected to customs and family back in Ecuador and we visit quite often (once every two years at least). Here are pictures from some of my favorite places in Ecuador:
+
+            <!--TODO: ADD ECUADOR PICTURES-->  
+          </p>
+        <a id="hobbies_anch"><h2>Hobbies &amp; Interests</h2></a>
+          <p>
+            Soccer has been a constant presence in my life and I both play it and watch professional matches regularly. In college, I usually play intramural soccer and organize some pick up games
+            throughout the semester. My preferred playing positions are either left winger or central attacking midfielder (CAM) since I tend to be more of an offensive minded player and I prefer to
+            put in a final pass rather than finishing a play myself. As a soccer fan I support the national teams of Ecuador and Italy although as of late being a fan of these teams has been painful
+            to say the least. At the club level I support AS Roma from the Italian league and I have a soft spot for Barcelona from the Spanish league. With these latter two teams being my favorite
+            clubs it should come as no surprise that my favorite soccer players of all time are Francesco Totti and Lionel Messi and they have undoubtedly had an influence on how I myself play the game.
+          </p>
+          <p>
+            One of my more recent interests has been coffee and it has been fascinating to learn about all the ways coffee can be brewed and enjoyed and how seemingly small
+            changes in the procedures one uses have a profound impacton the final cup. Currently, I am in the process of building a collection of brewing methods with my first two
+            purchases being a moka pot and a french press. I hope to add various pour over methods, an espresso machine, and a quality burr grinder to my set up soon.   
+          </p>
+          <p>
+            One of my favorite activities over the past few years has been playing pool. This interest came about because my dorm has quite an extensive pool set up and at first
+            it was a great way to destress with friends after a long day of classes and problem sets but it slowly became a great interest of mine and I've spent a lot of time trying to become
+            better at the game. Eight ball and Nine ball pool are my favorite games but I also enjoy playing cutthroat pretty often. I hope to start a pool club once I'm back on campus and begin
+            holding pool tournaments and expand our dorm's stash of pool supplies.
+          </p>  
+          <p>
+            I also enjoy hiking and visiting natural landmarks and national/state parks. Here are some pictures from a trip to the Long Valley Caldera in California.      
+          </p>     
+        <a id="academics_anch"><h2>Academics</h2></a>
+          <p>
+              I graduated from Cypress Creek High School in 2018 and I am currently entering my 
+              third year at Caltech persuing a bachelors degree in Physics with a minor in Computer Science. My current interests include condensed
+              matter physics, specifically as it relates to engineering noise resistent near term qubits, and quantum computing applications in simulating
+              physical systems and machine learning. 
+          </p>
+        <a id="prof_links_anch"><h2>Professional Links</h2></a>
+            <a href="https://www.linkedin.com/in/gianluca-delgado-514362195/">LinkedIn</a>
+            <a href="https://github.com/gianelgado12">Github</a>
+        <p>Click here to get a random message:</p>
+        <button onclick="addRandomGreeting()">Hello</button>
+        <div id="greeting-container"></div>
+      </div>
     </div>
   </body>
 </html>
