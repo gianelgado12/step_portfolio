@@ -28,7 +28,8 @@ padding: 8px 8px 16px 32px;
   display: block;
   text-decoration: none;
   color:black;
-  font-size: 0.75vw;
+  font-size: 125%;
+  word-wrap: break-word;
 }
 
 .sideNav a:hover{
