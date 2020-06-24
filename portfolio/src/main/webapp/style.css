@@ -1,7 +1,7 @@
 #main{
-    margin-left: auto;
+    margin-left: 40%;
     margin-right: auto;
-    width: 650px;
+    width: 25%;
 }
 
 #greeting-container {
@@ -9,7 +9,7 @@
 }
 
 #head_pic{
-    width: 500px;
+    width: 100%;
     height: auto;
 }
 
@@ -45,15 +45,23 @@
   width: 32%;
   height: auto;
   display: inline;
-  top:0;  
+  top: 0;
+  margin-left: auto;
+  margin-right:auto;  
 }
 
 ul{
-  list-style-type:none;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 ul a{
-  text-decoration: none;
+  font-size: 18px;
+  color: black;
+}
+
+ul a:hover{
+  color: darkgrey;
 }
 
 html{
