@@ -1,9 +1,74 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+#main{
+    margin-left: 40%;
+    margin-right: auto;
+    width: 25%;
 }
 
 #greeting-container {
   margin-top: 20px;
+}
+
+#head_pic{
+    width: 100%;
+    height: auto;
+}
+
+.sideNav{
+    height: 100%;
+    position: fixed;
+    z-index: 0;
+    top: 50px;
+    left: 25%;
+}
+
+.sideNav a{
+    padding: 8px 8px 16px 32px;
+    display: block;
+    text-decoration: none;
+    color:black;
+    font-size: 20px;
+}
+
+.sideNav a:hover{
+    color: darkgray;
+}
+
+.img_container{
+  width:100%;	
+}
+
+.img_row{
+  display:block;	
+}
+
+.img_row img{
+  width: 32%;
+  height: auto;
+  display: inline;
+  top: 0;
+  margin-left: auto;
+  margin-right:auto;  
+}
+
+ul{
+  list-style-type: none;
+  padding-left: 0;
+}
+
+ul a{
+  font-size: 18px;
+  color: black;
+}
+
+ul a:hover{
+  color: darkgrey;
+}
+
+html{
+  scroll-behavior: smooth;
+  background-color: #FFFF;
+}
+
+body{
+  font-family: monospace;
 }
