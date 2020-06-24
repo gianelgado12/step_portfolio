@@ -1,36 +1,39 @@
 #main{
-    margin-left: 40%;
-    margin-right: auto;
-    width: 25%;
+  margin-left: 40%;
+  margin-right: auto;
+  width: 25%;
 }
-
-#greeting-container {
-  margin-top: 20px;
+#content{
+  float: right;
 }
 
 #head_pic{
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .sideNav{
-    height: 100%;
-    position: fixed;
-    z-index: 0;
-    top: 50px;
-    left: 25%;
+  float: left;
+  height: 100%;
+  position: fixed;
+  top: 50px;
+  left: 25%;
+  width: 10%;
+  margin-right: 5%;
 }
 
+
 .sideNav a{
-    padding: 8px 8px 16px 32px;
-    display: block;
-    text-decoration: none;
-    color:black;
-    font-size: 20px;
+padding: 8px 8px 16px 32px;
+  display: block;
+  text-decoration: none;
+  color:black;
+  font-size: 125%;
+  word-wrap: break-word;
 }
 
 .sideNav a:hover{
-    color: darkgray;
+  color: darkgray;
 }
 
 .img_container{
@@ -44,7 +47,6 @@
 .img_row img{
   width: 32%;
   height: auto;
-  display: inline;
   top: 0;
   margin-left: auto;
   margin-right:auto;  
