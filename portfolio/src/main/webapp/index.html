@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="getMessage()">
     <div id="main">
       <div id="side_nav" class="sideNav">
         <nav>
@@ -15,33 +15,34 @@
           <a href="#academics_anch">Academics</a>
           <a href="#projects_anch">Projects</a>
           <a href="#prof_links_anch">Professional Links</a>
+          <a href="#comments_anch">Comments</a>
         </nav>
       </div>
       <div id="content">
         <h1>Gianluca Delgado's Portfolio</h1>
         <img src="/images/portfolio_pic.jpeg" id="head_pic">
+
         <a id="background_anch"><h2>Background</h2></a>
-          <p>
+        <p>
             Hi! my name is Gianluca Delgado I am a student and aspiring physicist currently entering my junior year at Caltech. Before moving to California for college, I spent most of my 
             life in Orlando, FL; however, I was born in Italy and both of my parents are immigrants from Ecuador. Although most of life has been spent in the US, my family makes an effort to
             keep us connected to customs and family back in Ecuador and we visit quite often (once every two years at least). Here are pictures from some of my favorite places in Ecuador:
-
-          </p>
-          <div class="img_container">
-            <div class="img_row">
-	      <img src="/images/guayaquil.JPG">
-	      <img src="/images/river.JPG">		      
-	      <img src="/images/chimborazo.jpeg">		      
-            </div>
-	    <div class="img_row">
-              <img src="/images/san_vicente.JPG">
-	      <img src="/images/tunguraghua.JPG">
-	      <img src="/images/water_fall.JPG">
-            </div>		    
-          </div> 
+        </p>
+        <div class="img_container">
+          <div class="img_row">
+	          <img src="/images/guayaquil.JPG">
+	          <img src="/images/river.JPG">		      
+	          <img src="/images/chimborazo.jpeg">		      
+          </div>
+	        <div class="img_row">
+            <img src="/images/san_vicente.JPG">
+	          <img src="/images/tunguraghua.JPG">
+	          <img src="/images/water_fall.JPG">
+          </div>		    
+        </div> 
 
         <a id="hobbies_anch"><h2>Hobbies &amp; Interests</h2></a>
-	  <h3>Soccer</h3>
+	        <h3>Soccer</h3>
           <p>
             Soccer has been a constant presence in my life and I both play it and watch professional matches regularly. In college, I usually play intramural soccer and organize some pick up games
             throughout the semester. My preferred playing positions are either left winger or central attacking midfielder (CAM) since I tend to be more of an offensive minded player and I prefer to
@@ -49,13 +50,13 @@
             to say the least. At the club level I support AS Roma from the Italian league and I have a soft spot for Barcelona from the Spanish league. With these latter two teams being my favorite
             clubs it should come as no surprise that my favorite soccer players of all time are Francesco Totti and Lionel Messi and they have undoubtedly had an influence on how I myself play the game.
           </p>
-	  <h3>Coffee</h3>
+	        <h3>Coffee</h3>
           <p>
             One of my more recent interests has been coffee and it has been fascinating to learn about all the ways coffee can be brewed and enjoyed and how seemingly small
             changes in the procedures one uses have a profound impacton the final cup. Currently, I am in the process of building a collection of brewing methods with my first two
             purchases being a moka pot and a french press. I hope to add various pour over methods, an espresso machine, and a quality burr grinder to my set up soon.   
           </p>
-	  <h3>Pool</h3>
+	        <h3>Pool</h3>
           <p>
             One of my favorite activities over the past few years has been playing pool. This interest came about because my dorm has quite an extensive pool set up and at first
             it was a great way to destress with friends after a long day of classes and problem sets but it slowly became a great interest of mine and I've spent a lot of time trying to become
@@ -67,15 +68,15 @@
             I also enjoy hiking and visiting natural landmarks and national/state parks. Here are some pictures from a trip to the Long Valley Caldera in California.
           </p>
           <div class="img_container">
-	    <div class="img_row">
+	          <div class="img_row">
               <img src="/images/cliff.jpeg">
-	      <img src="/images/mono_lake.jpeg">
-	      <img src="/images/movie_flats.jpeg">
-	    </div>
-	    <div class="img_row">
+	            <img src="/images/mono_lake.jpeg">
+	            <img src="/images/movie_flats.jpeg">
+	          </div>
+	          <div class="img_row">
               <img src="images/fossil_falls.jpeg">		    
             </div>
-	  </div> 
+	        </div> 
         <a id="academics_anch"><h2>Academics</h2></a>
           <p>
             I graduated from Cypress Creek High School in 2018 and I am currently entering my 
@@ -84,28 +85,38 @@
             physical systems and machine learning. 
           </p>
         <a id="projects_anch"><h2>Projects</h2></a>
-	<h3>Pong Game</h3>
-	</p>
-	  This was a final project for my Introduction to Software Engineering class and it consisted of my group and I building a physics engine and using that engine to 
-	  build a game. The entire project was done in C and used the OpenGL graphics library. The game we chose to create was a version of the game pong where one can chose to
-      play with any number of AIs in a single game (the players are organized around an appropriate regular polygon) and with one other person either on the same keyboard or
-	  over a network. My responsibilities for the project were to implement the actual physics for the engine and add the network functionality.
-	</p>
+	      <h3>Pong Game</h3>
+	      <p>
+	        This was a final project for my Introduction to Software Engineering class and it consisted of my group and I building a physics engine and using that engine to 
+	        build a game. The entire project was done in C and used the OpenGL graphics library. The game we chose to create was a version of the game pong where one can chose to
+          play with any number of AIs in a single game (the players are organized around an appropriate regular polygon) and with one other person either on the same keyboard or
+	        over a network. My responsibilities for the project were to implement the actual physics for the engine and add the network functionality.
+	      </p>
 
-	<h3>Fast Hamiltonian Simulation</h3>
-	<p>
-	This was a final project for my Quantum Programming and Algorithms course and it consisted of implementating an algorithm described in <a href="https://arxiv.org/abs/1811.08017">this</a> paper called qDRIFT.
-	Our task was to compare the time complexity of qDRIFT to more standard methods of compiling quantum circuits (i.e. First Order Trotter-Sizuki) with respect to metrics such as desired precision of
-	simulation, simulation time, and length of hamiltonian decomposition used in the simulation. A final paper was written decribing the results obtained from this project. The paper and all the code (written in 
-	Python and Microsoft's quantum development language Q#) can be found in <a href="https://github.com/gianelgado12/cs101-Fast-Hamiltonian-Project">this</a> repository. 
-	</p>
+	      <h3>Fast Hamiltonian Simulation</h3>
+	      <p>
+	        This was a final project for my Quantum Programming and Algorithms course and it consisted of implementating an algorithm described in <a href="https://arxiv.org/abs/1811.08017">this</a> paper called qDRIFT.
+	        Our task was to compare the time complexity of qDRIFT to more standard methods of compiling quantum circuits (i.e. First Order Trotter-Sizuki) with respect to metrics such as desired precision of
+	        simulation, simulation time, and length of hamiltonian decomposition used in the simulation. A final paper was written decribing the results obtained from this project. The paper and all the code (written in 
+	        Python and Microsoft's quantum development language Q#) can be found in <a href="https://github.com/gianelgado12/cs101-Fast-Hamiltonian-Project">this</a> repository. 
+	      </p>
         <a id="prof_links_anch"><h2>Professional Links</h2></a>
           <ul>
             <li><a href="https://www.linkedin.com/in/gianluca-delgado-514362195/">LinkedIn</a></li>
             <li><a href="https://github.com/gianelgado12">Github</a></li>
-	        <li><a href="/files/resume_gianluca_delgado.pdf">Resume/CV</li>
+	          <li><a href="/files/resume_gianluca_delgado.pdf">Resume/CV</a></li>
          </ul>
-      </div>
+
+        <a id="comments_anch"><h2>Comments</h2></a>
+        <form action="/data" method="POST">
+          <input name='text-input' value="Enter a comment!" onfocus="this.value=''" />
+          <br/><br/>
+          <input type="submit" />      
+        </form>
+        <div id="comments_container">
+          <ul id="comments_list"></ul>
+        </div> 
+      </div>    
     </div>
   </body>
 </html>
