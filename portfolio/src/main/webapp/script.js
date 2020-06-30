@@ -13,24 +13,67 @@
 // limitations under the License.
 
 /**
- * Adds a hard-coded message to the page
+ * Adds comments to the page
  */
-
- 
-function getMessage(){
+function getComments(){
   fetch('/data').then(response => response.json()).then((comments) => {
-    const commentsListElem = document.getElementById('comments_list');
-    commentsListElem.innerHTML = '';
-    for(const comment of Object.values(comments)){
-      commentsListElem.appendChild(addToList(comment));
+    const commentsList = document.getElementById('comments_list');
+    commentsList.innerHTML = '';
+    for(i = 0; i < comments.length; i++){
+      comment = comments[i];
+      commentsList.appendChild(createCommentElem(comment));
     }
   });
 }
 
-function addToList(item){
+/**
+ * Creates an HTML comment element
+ */
+function createCommentElem(comment){
+  // Creating comment list element
   const liElement = document.createElement('li');
-  liElement.innerText = item;
+  liElement.classList.add("comment");
+  
+  // Creating comment content element.
+  const contentElem = document.createElement('p');
+  contentElem.innerText = comment.content;
+  
+  // Creating comment header.
+  const nameElem = document.createElement('b');
+  nameElem.innerText = comment.userName + ' on ' + comment.uploadDate;
+ 
+  const deleteButton = document.createElement('button');
+  deleteButton.innerText = 'Delete'
+  deleteButton.addEventListener('click', () => {
+    // Removing comment from database.
+    deleteComment(comment);
+
+    // Removing comment from the DOM.
+    liElement.remove();
+  });
+
+  liElement.appendChild(nameElem);
+  liElement.appendChild(contentElem);
+  liElement.appendChild(deleteButton);
+
   return liElement;
+}
+
+/**
+ * Deletes a single comment from the webpage.
+ */
+function deleteComment(comment){
+  const params = new URLSearchParams();
+  params.append('id', comment.id);
+  fetch('/delete-data', {method: 'POST', body: params});
+}
+
+/**
+ * Deletes all comments from the webpage
+ */
+function deleteAllComments(){
+  fetch('/delete-all', {method: 'POST'})
+  getComments();
 }
 
 

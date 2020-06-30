@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getMessage()">
+  <body onload="getComments()">
     <div id="main">
       <div id="side_nav" class="sideNav">
         <nav>
@@ -109,12 +109,15 @@
 
         <a id="comments_anch"><h2>Comments</h2></a>
         <form action="/data" method="POST">
-          <input name='text-input' value="Enter a comment!" onfocus="this.value=''" />
+          <input name='name-input' value="Enter your name!" onfocus="this.value=''" />
+          <br/><br/>
+          <textarea name='comment-input' value="Enter a comment!" onfocus="this.value=''"></textarea>
           <br/><br/>
           <input type="submit" />      
         </form>
         <div id="comments_container">
           <ul id="comments_list"></ul>
+          <button onclick="deleteAllComments()">Delete All</button>
         </div> 
       </div>    
     </div>

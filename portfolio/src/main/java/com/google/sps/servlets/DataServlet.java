@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
+import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
@@ -37,35 +39,35 @@ public class DataServlet extends HttpServlet {
    * and returns it.
    */
   private String getJson(Query commentQuery){
-    String returnStr = "{";
-    int count = 0;
+    List<Comment> commentList = new ArrayList<>();
 
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery prepCommentQuery = dataStore.prepare(commentQuery);
     
+    
     for(Entity commentEntity : prepCommentQuery.asIterable()){
-      returnStr += "\"comment"+ Integer.toString(count)+"\": " + "\"" + 
-        commentEntity.getProperty("content") + "\", ";
-      count++;
+      String userName = (String)commentEntity.getProperty("name");
+      String content = (String)commentEntity.getProperty("content");
+      long timestamp = (long)commentEntity.getProperty("timestamp");
+      long id = commentEntity.getKey().getId();
+      commentList.add(new Comment(id, userName, timestamp, content));
     }
 
-    //Lobbing off extra characters from the end of string if necessary
-    if(returnStr.length() > 1){
-      returnStr = returnStr.substring(0, returnStr.length() - 2);
-    }
+    Gson gson = new Gson();
 
-    return returnStr + "}";
+    return gson.toJson(commentList);
   }
 
-  @Override
   /**
-   * Updating database with new comment submission and reloading page
+   * Updating database with new comment submission and reloading page.
    */
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String newComment = request.getParameter("text-input");
+    String newComment = request.getParameter("comment-input");
+    String userName = request.getParameter("name-input");
 
-    //Ensuring comment isn't empty and returns message if it is
-    if (newComment.replaceAll("\\s", "").equals("")){
+    //Ensuring comment or name isn't empty and returns message if it is
+    if (newComment.replaceAll("\\s", "").equals("") || userName.replaceAll("\\s", "").equals("")){
       response.getWriter().println("Enter Text");
       return;
     }
@@ -74,6 +76,7 @@ public class DataServlet extends HttpServlet {
     
     //Creating comment entity
     Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("name", userName);
     commentEntity.setProperty("content", newComment);
     commentEntity.setProperty("timestamp", timeStamp);
 
@@ -84,11 +87,11 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }    
 
-  @Override
   /**
    * Getting comments from database, sorting them by time, and writing them to the /data
-   * page in json format   
+   * page in json format.   
    */
+  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     Query commentQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
