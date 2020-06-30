@@ -25,6 +25,7 @@ import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,16 +43,13 @@ public class DataServlet extends HttpServlet {
     List<Comment> commentList = new ArrayList<>();
 
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery prepCommentQuery = dataStore.prepare(commentQuery);
+    Iterator<Entity> commentIterator = dataStore.prepare(commentQuery).asIterator();
     
     //Counter to limit number of comments displayed to the desired amount.
     int commentCounter = 0; 
     
-    for(Entity commentEntity : prepCommentQuery.asIterable()){
-      // Checking if counter exceeds desired number of comments.
-      if(commentCounter >= maxComm){
-        break;
-      }
+    while(commentIterator.hasNext() && commentCounter < maxComm){
+      Entity commentEntity = commentIterator.next();
       String userName = (String)commentEntity.getProperty("name");
       String content = (String)commentEntity.getProperty("content");
       long timestamp = (long)commentEntity.getProperty("timestamp");
