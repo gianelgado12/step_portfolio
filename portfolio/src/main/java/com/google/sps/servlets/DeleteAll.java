@@ -32,11 +32,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/* Servlet that deletes all comments. */
 @WebServlet("/delete-all")
-
 public class DeleteAll extends HttpServlet{
+  
+  /**
+   * Handling POST request to delete all the comment entities on the database 
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //Retrieving comments from database.
     Query commentQuery = new Query("Comment");
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery prepCommentQuery = dataStore.prepare(commentQuery);

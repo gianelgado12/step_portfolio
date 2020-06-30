@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that deletes comments. */
+/** Servlet that deletes a single comments. */
 @WebServlet("/delete-data")
 public class DeleteComment extends HttpServlet{
   @Override

@@ -58,10 +58,10 @@ public class DataServlet extends HttpServlet {
     return gson.toJson(commentList);
   }
 
-  @Override
   /**
    * Updating database with new comment submission and reloading page.
    */
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String newComment = request.getParameter("comment-input");
     String userName = request.getParameter("name-input");
@@ -87,11 +87,11 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }    
 
-  @Override
   /**
    * Getting comments from database, sorting them by time, and writing them to the /data
    * page in json format.   
    */
+  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     Query commentQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);

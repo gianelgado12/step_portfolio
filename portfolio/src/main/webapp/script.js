@@ -27,18 +27,18 @@ function getComments(){
 }
 
 /**
- *Creates an HTML comment element
+ * Creates an HTML comment element
  */
 function createCommentElem(comment){
-  //
+  // Creating comment list element
   const liElement = document.createElement('li');
   liElement.classList.add("comment");
   
-  //Creating comment content element.
+  // Creating comment content element.
   const contentElem = document.createElement('p');
   contentElem.innerText = comment.content;
   
-  //Creating comment header.
+  // Creating comment header.
   const nameElem = document.createElement('b');
   nameElem.innerText = comment.userName + ' on ' + comment.uploadDate;
  
@@ -59,13 +59,18 @@ function createCommentElem(comment){
   return liElement;
 }
 
-
+/**
+ * Deletes a single comment from the webpage.
+ */
 function deleteComment(comment){
   const params = new URLSearchParams();
   params.append('id', comment.id);
   fetch('/delete-data', {method: 'POST', body: params});
 }
 
+/**
+ * Deletes all comments from the webpage
+ */
 function deleteAllComments(){
   fetch('/delete-all', {method: 'POST'})
   getComments();
