@@ -66,4 +66,9 @@ function deleteComment(comment){
   fetch('/delete-data', {method: 'POST', body: params});
 }
 
+function deleteAllComments(){
+  fetch('/delete-all', {method: 'POST'})
+  getComments();
+}
+
 

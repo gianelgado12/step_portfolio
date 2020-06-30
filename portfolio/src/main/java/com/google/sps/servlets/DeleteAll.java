@@ -32,16 +32,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that deletes comments. */
-@WebServlet("/delete-data")
-public class DeleteComment extends HttpServlet{
+@WebServlet("/delete-all")
+
+public class DeleteAll extends HttpServlet{
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
-
-    Key commentEntityKey = KeyFactory.createKey("Comment", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(commentEntityKey);
+    Query commentQuery = new Query("Comment");
+    DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery prepCommentQuery = dataStore.prepare(commentQuery);
+     
+    for(Entity comment:prepCommentQuery.asIterable()){
+      dataStore.delete(comment.getKey());  
+    }
   }
 }
-
