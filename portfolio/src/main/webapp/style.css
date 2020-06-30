@@ -66,6 +66,20 @@ ul a:hover{
   color: darkgrey;
 }
 
+.comment{
+  padding: 8px 8px 8px 8px;
+  border-top: 1px solid black;  
+}
+
+.comment button{
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  text-align: center;
+}
+
 html{
   scroll-behavior: smooth;
   background-color: #FFFF;

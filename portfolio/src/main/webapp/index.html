@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getMessage()">
+  <body onload="getComments()">
     <div id="main">
       <div id="side_nav" class="sideNav">
         <nav>
@@ -22,7 +22,7 @@
         <h1>Gianluca Delgado's Portfolio</h1>
         <img src="/images/portfolio_pic.jpeg" id="head_pic">
 
-        <a id="background_anch"><h2>Background</h2></a>
+        <a id="background_anch"><h2>Background (Test)</h2></a>
         <p>
             Hi! my name is Gianluca Delgado I am a student and aspiring physicist currently entering my junior year at Caltech. Before moving to California for college, I spent most of my 
             life in Orlando, FL; however, I was born in Italy and both of my parents are immigrants from Ecuador. Although most of life has been spent in the US, my family makes an effort to
@@ -109,7 +109,9 @@
 
         <a id="comments_anch"><h2>Comments</h2></a>
         <form action="/data" method="POST">
-          <input name='text-input' value="Enter a comment!" onfocus="this.value=''" />
+          <input name='name-input' value="Enter your name!" onfocus="this.value=''" />
+          <br/><br/>
+          <textarea name='comment-input' value="Enter a comment!" onfocus="this.value=''"></textarea>
           <br/><br/>
           <input type="submit" />      
         </form>
