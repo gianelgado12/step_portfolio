@@ -38,19 +38,26 @@ public class DataServlet extends HttpServlet {
    * Takes in a query object and places its content in a json formatted string
    * and returns it.
    */
-  private String getJson(Query commentQuery){
+  private String getJson(Query commentQuery, int maxComm){
     List<Comment> commentList = new ArrayList<>();
 
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery prepCommentQuery = dataStore.prepare(commentQuery);
     
+    //Counter to limit number of comments displayed to the desired amount.
+    int commentCounter = 0; 
     
     for(Entity commentEntity : prepCommentQuery.asIterable()){
+      // Checking if counter exceeds desired number of comments.
+      if(commentCounter >= maxComm){
+        break;
+      }
       String userName = (String)commentEntity.getProperty("name");
       String content = (String)commentEntity.getProperty("content");
       long timestamp = (long)commentEntity.getProperty("timestamp");
       long id = commentEntity.getKey().getId();
       commentList.add(new Comment(id, userName, timestamp, content));
+      commentCounter++;
     }
 
     Gson gson = new Gson();
@@ -66,7 +73,7 @@ public class DataServlet extends HttpServlet {
     String newComment = request.getParameter("comment-input");
     String userName = request.getParameter("name-input");
 
-    //Ensuring comment or name isn't empty and returns message if it is
+    // Ensuring comment or name isn't empty and returns message if it is.
     if (newComment.replaceAll("\\s", "").equals("") || userName.replaceAll("\\s", "").equals("")){
       response.getWriter().println("Enter Text");
       return;
@@ -74,13 +81,13 @@ public class DataServlet extends HttpServlet {
 
     long timeStamp = System.currentTimeMillis();
     
-    //Creating comment entity
+    // Creating comment entity.
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("name", userName);
     commentEntity.setProperty("content", newComment);
     commentEntity.setProperty("timestamp", timeStamp);
 
-    //Store comment entity in datastore
+    // Store comment entity in datastore.
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
     dataStore.put(commentEntity);
 
@@ -93,9 +100,20 @@ public class DataServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    // Parsing max amount of comments to be retrieved.
+    int maxComm;
+    try{
+      maxComm = Integer.parseInt(request.getParameter("maxComments"));
+    }catch(NumberFormatException e){
+      System.err.println("Could not parse maximum number of comments");
+      return;
+    }
+    
+    //Retrieving comments and returning them as a JSON string.
     response.setContentType("application/json;");
     Query commentQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-    String json = getJson(commentQuery);
+    String json = getJson(commentQuery, maxComm);
     response.getWriter().println(json);
   }
 
