@@ -109,6 +109,13 @@
 
         <a id="comments_anch"><h2>Comments</h2></a>
         <form action="/data" method="POST">
+          <label for="num-comments">Number of Comments to Display:</label>
+          <select name="num-comments" id='comments-dropdown' onchange='getComments()'>
+            <option value=3>3</option>
+            <option value=6>6</option>
+            <option value=9>9</option>
+          </select>
+          <br/><br/>
           <input name='name-input' value="Enter your name!" onfocus="this.value=''" />
           <br/><br/>
           <textarea name='comment-input' value="Enter a comment!" onfocus="this.value=''"></textarea>

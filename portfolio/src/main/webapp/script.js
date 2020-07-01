@@ -12,11 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+
 /**
  * Adds comments to the page
  */
+
 function getComments(){
-  fetch('/data').then(response => response.json()).then((comments) => {
+  //Getting number of comments to display
+  const commentNumSelectEl = document.getElementById('comments-dropdown');
+  maxComments =  commentNumSelectEl.value;  
+  
+  //Retrieving and displaying specified number of comments
+  fetch('/data?maxComments='+maxComments).then(response => response.json()).then((comments) => {
     const commentsList = document.getElementById('comments_list');
     commentsList.innerHTML = '';
     for(i = 0; i < comments.length; i++){
