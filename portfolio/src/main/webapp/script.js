@@ -15,22 +15,57 @@
 
 
 /**
- * Adds comments to the page
+ * Adds comments and appropraite header to the page
  */
 
-function getComments(){
+function setUpPage(){
+  // Setting up login sensitive elements.
+  setLogin();
+  
   //Getting number of comments to display
   const commentNumSelectEl = document.getElementById('comments-dropdown');
   maxComments =  commentNumSelectEl.value;  
   
   //Retrieving and displaying specified number of comments
   fetch('/data?maxComments='+maxComments).then(response => response.json()).then((comments) => {
+    console.log(comments);
     const commentsList = document.getElementById('comments_list');
     commentsList.innerHTML = '';
     for(i = 0; i < comments.length; i++){
       comment = comments[i];
       commentsList.appendChild(createCommentElem(comment));
     }
+  });
+}
+
+
+/**
+ * Gets the login status of user and displays correct information in page header
+ * and displays comments if user is logged in.
+ */
+function setLogin(){
+  fetch('/loginStat').then(response => response.json()).then((login_status) => {
+    const loginLink = document.getElementById('login-link');
+    if(login_status.userStatus === "True"){
+      // Showing comments and welcome message if user is logged in.
+      document.getElementById('inner-comments-container').style.display = "block";
+      loginLink.innerText = 'Welcome, ' + login_status.userEmail;
+
+      // Adding logout link to header to let the user end their session.
+      loginLink.href = "/logout"
+    }else{
+      // Showing user a request to log in to enable comments.
+      const loginRequestEl = document.createElement('p');
+      loginRequestEl.innerText = "Please log in to access comments"
+      document.getElementById('comments-container').appendChild(loginRequestEl);
+
+      // Hiding comments.
+      document.getElementById('inner-comments-container').style.display = "none";
+
+      // Adding login link to header.
+      loginLink.innerText = 'Login';
+      loginLink.href = "/login"
+    } 
   });
 }
 
@@ -48,21 +83,23 @@ function createCommentElem(comment){
   
   // Creating comment header.
   const nameElem = document.createElement('b');
-  nameElem.innerText = comment.userName + ' on ' + comment.uploadDate;
- 
-  const deleteButton = document.createElement('button');
-  deleteButton.innerText = 'Delete'
-  deleteButton.addEventListener('click', () => {
-    // Removing comment from database.
-    deleteComment(comment);
-
-    // Removing comment from the DOM.
-    liElement.remove();
-  });
-
+  nameElem.innerText = comment.userEmail + ' on ' + comment.uploadDate;
+  
   liElement.appendChild(nameElem);
   liElement.appendChild(contentElem);
-  liElement.appendChild(deleteButton);
+  
+  if(comment.userEmail === comment.currUserEmail){ 
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = 'Delete'
+    deleteButton.addEventListener('click', () => {
+      // Removing comment from database.
+      deleteComment(comment);
+
+      // Removing comment from the DOM.
+      liElement.remove();
+    });
+    liElement.appendChild(deleteButton);
+  }
 
   return liElement;
 }
@@ -81,7 +118,7 @@ function deleteComment(comment){
  */
 function deleteAllComments(){
   fetch('/delete-all', {method: 'POST'})
-  getComments();
+  setUpPage();
 }
 
 

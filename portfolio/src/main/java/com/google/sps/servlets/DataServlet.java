@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -31,7 +33,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. */
+/**
+ * Servlet that retrieves comments from a datastore
+ * and allows users to post comments.
+ */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
@@ -39,7 +44,7 @@ public class DataServlet extends HttpServlet {
    * Takes in a query object and places its content in a json formatted string
    * and returns it.
    */
-  private String getJson(Query commentQuery, int maxComm){
+  private String getJson(Query commentQuery, int maxComm, String currUser){
     List<Comment> commentList = new ArrayList<>();
 
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
@@ -50,11 +55,11 @@ public class DataServlet extends HttpServlet {
     
     while(commentIterator.hasNext() && commentCounter < maxComm){
       Entity commentEntity = commentIterator.next();
-      String userName = (String)commentEntity.getProperty("name");
+      String userEmail = (String)commentEntity.getProperty("email");
       String content = (String)commentEntity.getProperty("content");
       long timestamp = (long)commentEntity.getProperty("timestamp");
       long id = commentEntity.getKey().getId();
-      commentList.add(new Comment(id, userName, timestamp, content));
+      commentList.add(new Comment(id, userEmail, timestamp, content, currUser));
       commentCounter++;
     }
 
@@ -69,10 +74,14 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String newComment = request.getParameter("comment-input");
-    String userName = request.getParameter("name-input");
-
+    
+    UserService userService = UserServiceFactory.getUserService();
+    if(!userService.isUserLoggedIn()){
+      response.sendRedirect("/login");
+    }
+    
     // Ensuring comment or name isn't empty and returns message if it is.
-    if (newComment.replaceAll("\\s", "").equals("") || userName.replaceAll("\\s", "").equals("")){
+    if (newComment.replaceAll("\\s", "").equals("")){
       response.getWriter().println("Enter Text");
       return;
     }
@@ -81,7 +90,7 @@ public class DataServlet extends HttpServlet {
     
     // Creating comment entity.
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("name", userName);
+    commentEntity.setProperty("email", userService.getCurrentUser().getEmail());
     commentEntity.setProperty("content", newComment);
     commentEntity.setProperty("timestamp", timeStamp);
 
@@ -99,6 +108,12 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
+    // Getting user email
+    UserService userService = UserServiceFactory.getUserService();
+    String currUser = "";
+    if(userService.isUserLoggedIn()){
+      currUser = userService.getCurrentUser().getEmail();
+    }
     // Parsing max amount of comments to be retrieved.
     int maxComm;
     try{
@@ -111,7 +126,7 @@ public class DataServlet extends HttpServlet {
     //Retrieving comments and returning them as a JSON string.
     response.setContentType("application/json;");
     Query commentQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-    String json = getJson(commentQuery, maxComm);
+    String json = getJson(commentQuery, maxComm, currUser);
     response.getWriter().println(json);
   }
 

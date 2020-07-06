@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -22,28 +24,27 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** 
- * Servlet that deletes a single comments. 
+/**
+ * Servlet that allows the user to login and
+ * using the UserService API.
  */
-@WebServlet("/delete-data")
-public class DeleteComment extends HttpServlet{
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response){
-    long id = Long.parseLong(request.getParameter("id"));
+@WebServlet("/login")
+public class Login extends HttpServlet{
 
-    Key commentEntityKey = KeyFactory.createKey("Comment", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(commentEntityKey);
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response)throws IOException{
+    UserService userService = UserServiceFactory.getUserService();
+    String urlToRedirectToAfterUserLogsIn = "/index.html";
+    String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+    response.sendRedirect(loginUrl);
   }
 }
-

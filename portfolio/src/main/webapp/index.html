@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getComments()">
+  <body onload="setUpPage()">
     <div id="main">
       <div id="side_nav" class="sideNav">
         <nav>
@@ -19,7 +19,10 @@
         </nav>
       </div>
       <div id="content">
-        <h1>Gianluca Delgado's Portfolio</h1>
+        <div id='header'>
+          <h1>Gianluca Delgado's Portfolio</h1>
+          <a href='/login' id='login-link'></a>
+        </div>
         <img src="/images/portfolio_pic.jpeg" id="head_pic">
 
         <a id="background_anch"><h2>Background</h2></a>
@@ -108,24 +111,24 @@
          </ul>
 
         <a id="comments_anch"><h2>Comments</h2></a>
-        <form action="/data" method="POST">
-          <label for="num-comments">Number of Comments to Display:</label>
-          <select name="num-comments" id='comments-dropdown' onchange='getComments()'>
-            <option value=3>3</option>
-            <option value=6>6</option>
-            <option value=9>9</option>
-          </select>
-          <br/><br/>
-          <input name='name-input' value="Enter your name!" onfocus="this.value=''" />
-          <br/><br/>
-          <textarea name='comment-input' value="Enter a comment!" onfocus="this.value=''"></textarea>
-          <br/><br/>
-          <input type="submit" />      
-        </form>
-        <div id="comments_container">
-          <ul id="comments_list"></ul>
-          <button onclick="deleteAllComments()">Delete All</button>
-        </div> 
+        <div id='comments-container'>
+          <div id='inner-comments-container'>
+            <form id='comments-form' action="/data" method="POST">
+              <label for="num-comments">Number of Comments to Display:</label>
+              <select name="num-comments" id='comments-dropdown' onchange='getComments()'>
+                <option value=5>5</option>
+                <option value=10>10</option>
+                <option value=50>50</option>
+              </select>
+              <br/><br/>
+              <textarea name='comment-input' value="Enter a comment!" onfocus="this.value=''"></textarea>
+              <br/><br/>
+              <input type="submit" />      
+            </form>
+            <ul id="comments_list"></ul>
+            <button onclick="deleteAllComments()">Delete All</button>
+          </div>
+        </div>
       </div>    
     </div>
   </body>
