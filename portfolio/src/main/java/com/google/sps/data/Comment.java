@@ -18,22 +18,24 @@ import java.util.Date;
 
 // A user-submitted comment
 public final class Comment{
-  private final String userName;
+  private final String userEmail;
   private final long timestamp;
   private final String content;
   private final Date uploadDate;
   private final long id;
+  private final String currUserEmail;
 
-  public Comment(long id, String userName, long timestamp, String content){
-    this.userName = userName;
+  public Comment(long id, String userEmail, long timestamp, String content, String currUserEmail){
+    this.userEmail = userEmail;
     this.timestamp = timestamp;
     this.content = content;
     this.uploadDate = new Date(timestamp);
     this.id = id;
+    this.currUserEmail = currUserEmail;
   }
 
-  public String getUserName(){
-    return this.userName;
+  public String getUserEmail(){
+    return this.userEmail;
   }
 
   public long getTimestamp(){
@@ -50,5 +52,9 @@ public final class Comment{
   
   public long getId(){
     return this.id;
+  }
+
+  public String getCurrUserEmail(){
+    return this.currUserEmail;
   }
 } 
