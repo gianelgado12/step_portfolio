@@ -12,12 +12,83 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
+
+
+/**
+ *
+ */
+function drawChart(){
+  fetch('/chart-data').then(response => response.json()).then((transientResponse)=>{
+    const responseData = new google.visualization.DataTable();
+    const residualData = new google.visualization.DataTable();
+
+    responseData.addColumn('number', 'Time (ms)');
+    responseData.addColumn('number', 'Experimental Amplitude (Volts)');
+    responseData.addColumn('number', 'Theoretical Amplitude (Volts)');
+
+    residualData.addColumn('number', 'Time (ms)');
+    residualData.addColumn('number', 'Residual(Volts)');
+
+    theoryData = transientResponse[0]
+    experimentalData = transientResponse[1]
+    residuals = transientResponse[2]
+
+    Object.keys(theoryData).forEach((timeStep) => {
+      responseData.addRow([parseFloat(timeStep), parseFloat(experimentalData[timeStep]), parseFloat(theoryData[timeStep])]);
+      residualData.addRow([parseFloat(timeStep), parseFloat(residuals[timeStep])]);
+    });
+
+    const options = {
+      'title': 'Transient Response of an RLC Circuit',
+      'legend':{'position':'bottom'},
+      'width':350,
+      'vAxis':{'title':'Amplitude (Volts)'},
+      'hAxis':{'title':'Time (ms)'}
+    }
+
+    const responseChart = new google.visualization.LineChart(document.getElementById('response-chart-container'));
+    responseChart.draw(responseData, options);
+
+    const residualChart = new google.visualization.LineChart(document.getElementById('residual-chart-container'));
+    residualChart.draw(residualData, options);
+  });
+  /**
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Rappers');
+  data.addColumn('number', 'Number of Charting Songs');
+  data.addRows([
+    ['Drake', 92],
+    ['Jay-Z', 47],
+    ['Eminem', 41],
+    ['Kanye West', 39],
+    ['J.Cole', 37],
+    ['Lil Wayne', 35],
+    ['Future', 34],
+    ['Nicki Minaj', 29],
+    ['Meek Mill', 28],
+    ['Kendrick Lamar', 27],
+    ['French Montana', 11]
+  ]);
+  const options = {
+    'title': 'Number of Hit Songs',
+    'width': 500,
+    'height': 400
+  };
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById('chart-container'));
+  chart.draw(data, options);
+  */
+}
 
 
 /**
  * Adds comments and appropraite header to the page
  */
-
 function setUpPage(){
   // Setting up login sensitive elements.
   setLogin();
@@ -28,7 +99,6 @@ function setUpPage(){
   
   //Retrieving and displaying specified number of comments
   fetch('/data?maxComments='+maxComments).then(response => response.json()).then((comments) => {
-    console.log(comments);
     const commentsList = document.getElementById('comments_list');
     commentsList.innerHTML = '';
     for(i = 0; i < comments.length; i++){
