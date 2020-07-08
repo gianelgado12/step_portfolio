@@ -35,38 +35,37 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that retrieves comments from a datastore
- * and allows users to post comments.
+ * Servlet that retrives data to be displayed in charts from
+ * CSV files.
  */
 @WebServlet("/chart-data")
 public class ChartData extends HttpServlet {
+  // Maps to hold chart data.
   private LinkedHashMap<Double, Double> theoreticalResponse = new LinkedHashMap<>();
   private LinkedHashMap<Double, Double> actualResponse = new LinkedHashMap<>();
   private LinkedHashMap<Double, Double> residuals = new LinkedHashMap<>();
-
+  
   @Override
   public void init() {
+
+    // Initializing scanners for data files.
     Scanner experimentalScanner = new Scanner(getServletContext().getResourceAsStream(
         "/files/TransientResponse2.csv"));
     Scanner theoreticalScanner = new Scanner(getServletContext().getResourceAsStream(
         "/files/theoreticalFit.csv"));
     
+    // Reading in data files and placing data into maps. 
     while (experimentalScanner.hasNextLine() && theoreticalScanner.hasNextLine()) {
       String line = experimentalScanner.nextLine();
       String[] experimentCells = line.split(",");
-
       Double time = Double.valueOf(experimentCells[0]);
       Double experimentAmplitude = Double.valueOf(experimentCells[1]);
-
       actualResponse.put(time, experimentAmplitude);
       
       line = theoreticalScanner.nextLine();
       String[] theoryCells = line.split(",");
-
       Double theoryAmplitude = Double.valueOf(theoryCells[1]);
-
       theoreticalResponse.put(time, theoryAmplitude);
-
       residuals.put(time, experimentAmplitude - theoryAmplitude);
     }
 
@@ -78,9 +77,13 @@ public class ChartData extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
     response.setContentType("application/json");
     Gson gson = new Gson();
+
+    // Converting above maps to JSON strings.
     String theoryJson = gson.toJson(theoreticalResponse);
     String experimentalJson = gson.toJson(actualResponse);
     String residualJson = gson.toJson(residuals);
+
+    // Returning all chart data as a JSON array.
     response.getWriter().println("[" + theoryJson + "," + experimentalJson + "," + residualJson + "]");
   }
 }

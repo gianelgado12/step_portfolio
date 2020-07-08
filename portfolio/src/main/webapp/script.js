@@ -20,13 +20,14 @@ google.charts.setOnLoadCallback(drawChart);
 
 
 /**
- *
+ * Fetches chart data from servlet and displays corresponding line charts. 
  */
 function drawChart(){
   fetch('/chart-data').then(response => response.json()).then((transientResponse)=>{
+   
     const responseData = new google.visualization.DataTable();
     const residualData = new google.visualization.DataTable();
-
+    
     responseData.addColumn('number', 'Time (ms)');
     responseData.addColumn('number', 'Experimental Amplitude (Volts)');
     responseData.addColumn('number', 'Theoretical Amplitude (Volts)');
@@ -43,48 +44,29 @@ function drawChart(){
       residualData.addRow([parseFloat(timeStep), parseFloat(residuals[timeStep])]);
     });
 
-    const options = {
+    const responseOptions = {
       'title': 'Transient Response of an RLC Circuit',
-      'legend':{'position':'bottom'},
-      'width':350,
-      'vAxis':{'title':'Amplitude (Volts)'},
-      'hAxis':{'title':'Time (ms)'}
+      'legend': {'position':'bottom'},
+      'width': 350,
+      'vAxis': {'title':'Amplitude (Volts)'},
+      'hAxis': {'title':'Time (ms)'}
+    }
+
+    const residualOptions = { 
+      'title': 'Residuals',
+      'legend': {'position':'bottom'},
+      'width': 350,
+      'vAxis': {'title':'Amplitude (Volts)'},
+      'hAxis': {'title':'Time (ms)'}
     }
 
     const responseChart = new google.visualization.LineChart(document.getElementById('response-chart-container'));
-    responseChart.draw(responseData, options);
+    responseChart.draw(responseData, responseOptions);
 
     const residualChart = new google.visualization.LineChart(document.getElementById('residual-chart-container'));
-    residualChart.draw(residualData, options);
+    residualChart.draw(residualData, residualOptions);
   });
-  /**
-  const data = new google.visualization.DataTable();
-  data.addColumn('string', 'Rappers');
-  data.addColumn('number', 'Number of Charting Songs');
-  data.addRows([
-    ['Drake', 92],
-    ['Jay-Z', 47],
-    ['Eminem', 41],
-    ['Kanye West', 39],
-    ['J.Cole', 37],
-    ['Lil Wayne', 35],
-    ['Future', 34],
-    ['Nicki Minaj', 29],
-    ['Meek Mill', 28],
-    ['Kendrick Lamar', 27],
-    ['French Montana', 11]
-  ]);
-  const options = {
-    'title': 'Number of Hit Songs',
-    'width': 500,
-    'height': 400
-  };
-  const chart = new google.visualization.ColumnChart(
-      document.getElementById('chart-container'));
-  chart.draw(data, options);
-  */
-}
-
+}  
 
 /**
  * Adds comments and appropraite header to the page
@@ -158,7 +140,7 @@ function createCommentElem(comment){
   liElement.appendChild(nameElem);
   liElement.appendChild(contentElem);
   
-  if(comment.userEmail === comment.currUserEmail){ 
+  if(comment.userEmail === comment.currentUserEmail){ 
     const deleteButton = document.createElement('button');
     deleteButton.innerText = 'Delete'
     deleteButton.addEventListener('click', () => {

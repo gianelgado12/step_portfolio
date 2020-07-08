@@ -44,7 +44,7 @@ public class DataServlet extends HttpServlet {
    * Takes in a query object and places its content in a json formatted string
    * and returns it.
    */
-  private String getJson(Query commentQuery, int maxComm, String currUser){
+  private String getJson(Query commentQuery, int maxComm, String currentUser){
     List<Comment> commentList = new ArrayList<>();
 
     DatastoreService dataStore = DatastoreServiceFactory.getDatastoreService();
@@ -59,7 +59,7 @@ public class DataServlet extends HttpServlet {
       String content = (String)commentEntity.getProperty("content");
       long timestamp = (long)commentEntity.getProperty("timestamp");
       long id = commentEntity.getKey().getId();
-      commentList.add(new Comment(id, userEmail, timestamp, content, currUser));
+      commentList.add(new Comment(id, userEmail, timestamp, content, currentUser));
       commentCounter++;
     }
 
@@ -110,10 +110,11 @@ public class DataServlet extends HttpServlet {
     
     // Getting user email
     UserService userService = UserServiceFactory.getUserService();
-    String currUser = "";
+    String currentUser = "";
     if(userService.isUserLoggedIn()){
-      currUser = userService.getCurrentUser().getEmail();
+      currentUser = userService.getCurrentUser().getEmail();
     }
+
     // Parsing max amount of comments to be retrieved.
     int maxComm;
     try{
@@ -126,7 +127,7 @@ public class DataServlet extends HttpServlet {
     //Retrieving comments and returning them as a JSON string.
     response.setContentType("application/json;");
     Query commentQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-    String json = getJson(commentQuery, maxComm, currUser);
+    String json = getJson(commentQuery, maxComm, currentUser);
     response.getWriter().println(json);
   }
 

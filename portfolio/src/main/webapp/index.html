@@ -16,7 +16,7 @@
           <a href="#academics_anch">Academics</a>
           <a href="#projects_anch">Projects</a>
           <a href="#prof_links_anch">Professional Links</a>
-          <a href="#chart_anch">Charts</a>
+          <a href="#chart_anch">RLC Response</a>
           <a href="#comments_anch">Comments</a>
         </nav>
       </div>
@@ -29,11 +29,11 @@
 
         <a id="background_anch"><h2>Background</h2></a>
         <p>
-            Hi! my name is Gianluca Delgado I am a student and aspiring physicist currently entering my junior year at Caltech. 
-            Before moving to California for college, I spent most of my life in Orlando, FL; however, I was born in Italy and 
-            both of my parents are immigrants from Ecuador. Although most of life has been spent in the US, my family makes 
-            an effort to keep us connected to customs and family back in Ecuador and we visit quite often (once every two 
-            years at least). Here are pictures from some of my favorite places in Ecuador:
+          Hi! my name is Gianluca Delgado I am a student and aspiring physicist currently entering my junior year at Caltech. 
+          Before moving to California for college, I spent most of my life in Orlando, FL; however, I was born in Italy and 
+          both of my parents are immigrants from Ecuador. Although most of life has been spent in the US, my family makes 
+          an effort to keep us connected to customs and family back in Ecuador and we visit quite often (once every two 
+          years at least). Here are pictures from some of my favorite places in Ecuador:
         </p>
         <div class="img_container">
           <div class="img_row">
@@ -127,9 +127,28 @@
             <li><a href="https://github.com/gianelgado12">Github</a></li>
 	          <li><a href="/files/resume_gianluca_delgado.pdf">Resume/CV</a></li>
          </ul>
-        <a id="chart_anch"><h2>Chart</h2></a>
+        <a id="chart_anch"><h2>RLC Response</h2></a>
+        <p>
+        The following chart demonstrates the response of a series RLC (resistor, inductor, and capacitor) circuit to a 
+        short 2.0 V impulse of current. In thoery, with the resistor, inductor, and capictor being of static resistance,
+        inductance, and capacitance respectively, one would expect the circuit to exhibit a 'ringdown' in its response to
+        the current impulse. This 'ringdown' is a decaying oscillation of the voltage measured across the capacitor that
+        oscillates at the resonant frequency of the circuit. In the chart below the actual measured response of the circuit
+        is plotted alongside the theoretical response as a function of time. 
+        </p>
         <div id='response-chart-container'></div>
+        <p>
+        Note that the experimental and theoretical response line up closely with one another indicating the theory works well
+        in describing the impulse response of the circuit. However, looking at the residuals of the above chart (i.e. the 
+        difference between the theoretical and experimental values plotted along the same axis):
+        </p>
         <div id='residual-chart-container'></div>
+        <p>
+        one can see a clear pattern in the way the theory deviates from experiment (in this case it is exhibited as a decaying beat
+        pattern) indicating that the theory is failing to account for some phenomena in the circuit. The unaccounted phenomena turns
+        out to be that the way inductors and capacitors are constructed allows them to essentially act like one another at various 
+        resonant frequencies introducing variations in the ringdown frequency of the circuit.
+        </p>
         <a id="comments_anch"><h2>Comments</h2></a>
         <div id='comments-container'>
           <div id='inner-comments-container'>
