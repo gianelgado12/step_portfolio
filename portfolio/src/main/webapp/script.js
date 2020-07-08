@@ -12,12 +12,65 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
 
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
+
+
+/**
+ * Fetches chart data from servlet and displays corresponding line charts. 
+ */
+function drawChart(){
+  fetch('/chart-data').then(response => response.json()).then((transientResponse)=>{
+   
+    const responseData = new google.visualization.DataTable();
+    const residualData = new google.visualization.DataTable();
+    
+    responseData.addColumn('number', 'Time (ms)');
+    responseData.addColumn('number', 'Experimental Amplitude (Volts)');
+    responseData.addColumn('number', 'Theoretical Amplitude (Volts)');
+
+    residualData.addColumn('number', 'Time (ms)');
+    residualData.addColumn('number', 'Residual(Volts)');
+
+    theoryData = transientResponse[0]
+    experimentalData = transientResponse[1]
+    residuals = transientResponse[2]
+
+    Object.keys(theoryData).forEach((timeStep) => {
+      responseData.addRow([parseFloat(timeStep), parseFloat(experimentalData[timeStep]), parseFloat(theoryData[timeStep])]);
+      residualData.addRow([parseFloat(timeStep), parseFloat(residuals[timeStep])]);
+    });
+
+    const responseOptions = {
+      'title': 'Transient Response of an RLC Circuit',
+      'legend': {'position':'bottom'},
+      'width': 350,
+      'vAxis': {'title':'Amplitude (Volts)'},
+      'hAxis': {'title':'Time (ms)'}
+    }
+
+    const residualOptions = { 
+      'title': 'Residuals',
+      'legend': {'position':'bottom'},
+      'width': 350,
+      'vAxis': {'title':'Amplitude (Volts)'},
+      'hAxis': {'title':'Time (ms)'}
+    }
+
+    const responseChart = new google.visualization.LineChart(document.getElementById('response-chart-container'));
+    responseChart.draw(responseData, responseOptions);
+
+    const residualChart = new google.visualization.LineChart(document.getElementById('residual-chart-container'));
+    residualChart.draw(residualData, residualOptions);
+  });
+}  
 
 /**
  * Adds comments and appropraite header to the page
  */
-
 function setUpPage(){
   // Setting up login sensitive elements.
   setLogin();
@@ -28,7 +81,6 @@ function setUpPage(){
   
   //Retrieving and displaying specified number of comments
   fetch('/data?maxComments='+maxComments).then(response => response.json()).then((comments) => {
-    console.log(comments);
     const commentsList = document.getElementById('comments_list');
     commentsList.innerHTML = '';
     for(i = 0; i < comments.length; i++){
@@ -88,7 +140,7 @@ function createCommentElem(comment){
   liElement.appendChild(nameElem);
   liElement.appendChild(contentElem);
   
-  if(comment.userEmail === comment.currUserEmail){ 
+  if(comment.userEmail === comment.currentUserEmail){ 
     const deleteButton = document.createElement('button');
     deleteButton.innerText = 'Delete'
     deleteButton.addEventListener('click', () => {

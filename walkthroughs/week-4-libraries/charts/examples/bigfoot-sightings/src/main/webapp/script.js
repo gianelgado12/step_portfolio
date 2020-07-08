@@ -36,4 +36,6 @@ function drawChart() {
         document.getElementById('chart-container'));
     chart.draw(data, options);
   });
+
+  
 }

@@ -23,15 +23,15 @@ public final class Comment{
   private final String content;
   private final Date uploadDate;
   private final long id;
-  private final String currUserEmail;
+  private final String currentUserEmail;
 
-  public Comment(long id, String userEmail, long timestamp, String content, String currUserEmail){
+  public Comment(long id, String userEmail, long timestamp, String content, String currentUserEmail){
     this.userEmail = userEmail;
     this.timestamp = timestamp;
     this.content = content;
     this.uploadDate = new Date(timestamp);
     this.id = id;
-    this.currUserEmail = currUserEmail;
+    this.currentUserEmail = currentUserEmail;
   }
 
   public String getUserEmail(){
@@ -54,7 +54,7 @@ public final class Comment{
     return this.id;
   }
 
-  public String getCurrUserEmail(){
-    return this.currUserEmail;
+  public String getCurrentUserEmail(){
+    return this.currentUserEmail;
   }
 } 
