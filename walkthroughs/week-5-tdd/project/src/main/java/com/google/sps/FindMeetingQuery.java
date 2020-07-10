@@ -16,17 +16,19 @@ package com.google.sps;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // Setting up necessary data structures.
-    TreeSet<TimeRange> conflictEvents = new TreeSet<>(TimeRange.ORDER_BY_START);
+    // Setting up necessary data and structures.
     Collection<String> attendees = request.getAttendees();
     Collection<TimeRange> availableTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+    Collection<TimeRange> optionalAvailableTimes = new TreeSet<>(TimeRange.ORDER_BY_START); 
     
     int duration = (int) request.getDuration();  
     
@@ -36,45 +38,77 @@ public final class FindMeetingQuery {
     }
     
     // Filtering out events with no conflicting attendees.
-    for(Event currentEvent:events) {
-      Collection<String> eventAttendees = currentEvent.getAttendees();
-      for(String currentAttendee : attendees) {
-        if(eventAttendees.contains(currentAttendee)) {
-          conflictEvents.add(currentEvent.getWhen());
-          break;
+    TreeSet<TimeRange> conflictEvents = getConflicts(events, attendees);
+     
+    // If no events conflict then the whole day is free. Otherwise find
+    // available blocks of time.
+    if(conflictEvents.isEmpty()){
+      availableTimes.add(TimeRange.WHOLE_DAY);
+    }else{
+      availableTimes = getAvailableTimes(conflictEvents, duration);
+    }
+    
+    // Getting free time intervals for optional attendees that fit mandatory attendee free time blocks. 
+    for(String optionalAttendee : optionalAttendees) {
+      TreeSet<TimeRange> attendeeConflicts = getConflicts(events, Arrays.asList(optionalAttendee));
+      TreeSet<TimeRange> attendeeAvailableTimes = getAvailableTimes(attendeeConflicts, duration);
+      optionalAvailableTimes.addAll(getLargeEnoughOverlaps(attendeeAvailableTimes, availableTimes, duration));
+    }
+   
+    if((!optionalAttendees.isEmpty() && attendees.isEmpty()) || !optionalAvailableTimes.isEmpty()){
+      return new ArrayList<TimeRange>(optionalAvailableTimes);
+    }
+    return new ArrayList<TimeRange>(availableTimes);
+  }
+
+  // Given two collections of TimeRanges return TimeRanges for which these two collections overlap.
+  private static TreeSet<TimeRange> getLargeEnoughOverlaps(Collection<TimeRange> firstCollection, 
+                                                           Collection<TimeRange> secondCollection,
+                                                           int minimumDuration){
+    TreeSet<TimeRange> overlaps = new TreeSet<>(TimeRange.ORDER_BY_START);
+    for(TimeRange firstTimeBlock : firstCollection) {
+      for(TimeRange secondTimeBlock : secondCollection) {
+        if(firstTimeBlock.overlaps(secondTimeBlock)) {
+          TimeRange overlapTime = getOverlap(firstTimeBlock, secondTimeBlock, false);
+          if(overlapTime.duration() >= minimumDuration) {
+            overlaps.add(overlapTime);
+          }
         }
       }
     }
-    
-    // If no events conflict then the whole day is free.
-    if(conflictEvents.isEmpty()){
-      availableTimes.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true));
-      return new ArrayList<TimeRange>(availableTimes);
-    }
-    
-    // Variables to keep track of start and end of available and unavailable time blocks.
-    int unavailableStart = conflictEvents.first().start();
-    int unavailableEnd = conflictEvents.first().end();
+    return overlaps;
+  }
+
+  private static TimeRange getOverlap(TimeRange rangeOne, TimeRange rangeTwo, boolean inclusive){
+   assert rangeOne.overlaps(rangeTwo) : "The two ranges don't overlap"; 
+   int startOverlap = Math.max(rangeOne.start(), rangeTwo.start());
+   int endOverlap = Math.min(rangeOne.end(), rangeTwo.end());
+   if(endOverlap == TimeRange.END_OF_DAY){
+     inclusive = true;
+   }
+   return TimeRange.fromStartEnd(startOverlap, endOverlap, inclusive);
+  }
+  
+  // Gets all available timeblocks for the meeting throughout the day given a list of conflicts
+  private static TreeSet<TimeRange> getAvailableTimes(TreeSet<TimeRange> conflicts, int meetingDuration){
+    TreeSet<TimeRange> availableTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
+    int unavailableStart = conflicts.first().start();
+    int unavailableEnd = conflicts.first().end();
     int availableStart = TimeRange.START_OF_DAY;
     
-    // Variable to hold previous conflicting TimeRange.
     TimeRange previousConflict = null;
 
-    for(TimeRange currentConflict : conflictEvents) {
+    // Extend unavailable time block for overlapping time conflicts
+    // if necessary. Otherwise, add TimeRange available before new
+    // unavailable block if it is large enough to accomodate meeting.
+    for(TimeRange currentConflict : conflicts) {
       if(previousConflict != null) {
-
-        // Extend unavailable time block for overlapping time conflicts
-        // if necessary. Otherwise, add TimeRange available before new
-        // unavailable block if it is large enough to accomodate meeting.
         if(currentConflict.overlaps(previousConflict)) {
           if(currentConflict.end() > previousConflict.end()) {
             unavailableEnd = currentConflict.end();
           }
         } else {
-          TimeRange availableBlock = TimeRange.fromStartEnd(availableStart, unavailableStart, false);
-          if(availableBlock.duration() >= duration) {
-            availableTimes.add(availableBlock);
-          }
+          addIfLargeEnough(availableTimes, availableStart, unavailableStart, meetingDuration, false);
           availableStart = unavailableEnd;
           unavailableStart = currentConflict.start();
           unavailableEnd = currentConflict.end();
@@ -85,18 +119,36 @@ public final class FindMeetingQuery {
     }
     
     // Add last two possible available time blocks if they are large enough. 
-    TimeRange availableBlock = TimeRange.fromStartEnd(availableStart, unavailableStart, false);
-    if(availableBlock.duration() >= duration) {
+    addIfLargeEnough(availableTimes, availableStart, unavailableStart, meetingDuration, false);
+    availableStart = unavailableEnd;
+    addIfLargeEnough(availableTimes, availableStart, TimeRange.END_OF_DAY, meetingDuration, true);
+    
+    return availableTimes;
+  }
+
+  // Adding a time block to a specfied collection if it is long enough for the meeting.
+  private static void addIfLargeEnough(Collection<TimeRange> availableTimes, int start, int end, 
+    int meetingDuration, boolean inclusive){
+    TimeRange availableBlock = TimeRange.fromStartEnd(start, end, inclusive);
+    if(availableBlock.duration() >= meetingDuration) {
       availableTimes.add(availableBlock);
     }
-    availableStart = unavailableEnd;
-
-    TimeRange lastBlock = TimeRange.fromStartEnd(availableStart, TimeRange.END_OF_DAY, true);
-    if(lastBlock.duration() >= duration) {
-      availableTimes.add(lastBlock);
-    }
-    
-    return new ArrayList<TimeRange>(availableTimes);
   }
+
+  // Filtering out events that don't contain any confliciting attendees.
+  private static TreeSet<TimeRange> getConflicts(Collection<Event> events, Collection<String> attendees){
+    TreeSet<TimeRange> conflictingTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
+    for(Event currentEvent:events) {
+      Collection<String> eventAttendees = currentEvent.getAttendees();
+      for(String currentAttendee : attendees) {
+        if(eventAttendees.contains(currentAttendee)) {
+          conflictingTimes.add(currentEvent.getWhen());
+          break;
+        }
+      }
+    }
+    return conflictingTimes;
+  }
+
 }
 
