@@ -22,9 +22,15 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public final class FindMeetingQuery {
+  /**
+   * Given a list of events for a single day and a request for a meeting, return
+   * all time blocks that can accomodate the requested meeting such that there
+   * are no conflicts with any of the other events for the mandatory attendees and, 
+   * if possible, optional attendees can be included.
+   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // Setting up necessary data and structures.
     Collection<String> attendees = request.getAttendees();
     Collection<TimeRange> availableTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
     Collection<String> optionalAttendees = request.getOptionalAttendees();
@@ -38,14 +44,14 @@ public final class FindMeetingQuery {
     }
     
     // Filtering out events with no conflicting attendees.
-    TreeSet<TimeRange> conflictEvents = getConflicts(events, attendees);
+    TreeSet<TimeRange> mandatoryConflictEvents = getConflicts(events, attendees);
      
     // If no events conflict then the whole day is free. Otherwise find
     // available blocks of time.
-    if(conflictEvents.isEmpty()){
+    if(mandatoryConflictEvents.isEmpty()){
       availableTimes.add(TimeRange.WHOLE_DAY);
     }else{
-      availableTimes = getAvailableTimes(conflictEvents, duration);
+      availableTimes = getAvailableTimes(mandatoryConflictEvents, duration);
     }
     
     // Getting free time intervals for optional attendees that fit mandatory attendee free time blocks. 
@@ -78,7 +84,8 @@ public final class FindMeetingQuery {
     }
     return overlaps;
   }
-
+  
+  // Given two overlapping TimeRanges return the TimeRange for which the two ranges overlap.
   private static TimeRange getOverlap(TimeRange rangeOne, TimeRange rangeTwo, boolean inclusive){
    assert rangeOne.overlaps(rangeTwo) : "The two ranges don't overlap"; 
    int startOverlap = Math.max(rangeOne.start(), rangeTwo.start());
@@ -89,7 +96,7 @@ public final class FindMeetingQuery {
    return TimeRange.fromStartEnd(startOverlap, endOverlap, inclusive);
   }
   
-  // Gets all available timeblocks for the meeting throughout the day given a list of conflicts
+  // Gets all available timeblocks of size at least meetingDuration  throughout the day given a list of conflicts.
   private static TreeSet<TimeRange> getAvailableTimes(TreeSet<TimeRange> conflicts, int meetingDuration){
     TreeSet<TimeRange> availableTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
     int unavailableStart = conflicts.first().start();
@@ -135,7 +142,7 @@ public final class FindMeetingQuery {
     }
   }
 
-  // Filtering out events that don't contain any confliciting attendees.
+  // Getting timeslots for which a group of attendees is unavailable.
   private static TreeSet<TimeRange> getConflicts(Collection<Event> events, Collection<String> attendees){
     TreeSet<TimeRange> conflictingTimes = new TreeSet<>(TimeRange.ORDER_BY_START);
     for(Event currentEvent:events) {
